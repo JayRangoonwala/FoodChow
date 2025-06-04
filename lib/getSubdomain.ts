@@ -11,6 +11,10 @@ export const getSubdomainFromHeaders = cache(async () => {
   console.log(headersList)
   console.log(host)
 
+  if(host.includes("food-chow-84vy3a9rn-jayrangoonwalas-projects")){
+    return "foodchowdemoindia"
+  }
+
   if (
     host === "foodchow.in" || 
     host === "www.foodchow.in" || 
