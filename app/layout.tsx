@@ -28,8 +28,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const subdomain = await getSubdomainFromHeaders();
-  const shopId = await fetchShopIdBySubdomain(subdomain);
-  console.log(subdomain)
+  const shopId = await fetchShopIdBySubdomain("foodchowdemoindia");
+  // console.log(subdomain)
   if (!shopId) {
     console.log("Error in Fetching ShopId", subdomain);
   }
