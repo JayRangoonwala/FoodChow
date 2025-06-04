@@ -29,7 +29,7 @@ export default async function RootLayout({
 }>) {
   const subdomain = await getSubdomainFromHeaders();
   const shopId = await fetchShopIdBySubdomain(subdomain);
-
+  console.log(subdomain)
   if (!shopId) {
     console.log("Error in Fetching ShopId", subdomain);
   }

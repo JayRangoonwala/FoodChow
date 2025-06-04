@@ -8,6 +8,9 @@ export const getSubdomainFromHeaders = cache(async () => {
   const headersList = await headers();
   const host = headersList.get("host") || "";
 
+  console.log(headersList)
+  console.log(host)
+
   if (
     host === "foodchow.in" || 
     host === "www.foodchow.in" || 
@@ -20,6 +23,7 @@ export const getSubdomainFromHeaders = cache(async () => {
   if (parts.length > 2) {
     return parts[0] === "www" ? parts[1] : parts[0];
   }
+  console.log(parts)
 
   return "foodchowdemoindia"; // fallback subdomain
 });
