@@ -8,8 +8,12 @@ export const getSubdomainFromHeaders = cache(async () => {
   const headersList = await headers();
   const host = headersList.get("host") || "";
 
-  if (host === "foodchow.in") {
-    return ""; // default or homepage
+  if (
+    host === "foodchow.in" || 
+    host === "www.foodchow.in" || 
+    host === "food-chow.vercel.app"
+  ) {
+    return ""; // This is the default homepage or dev link
   }
 
   const parts = host.split(".");
@@ -17,5 +21,5 @@ export const getSubdomainFromHeaders = cache(async () => {
     return parts[0] === "www" ? parts[1] : parts[0];
   }
 
-  return "foodchowdemoindia"; // fallback
+  return "foodchowdemoindia"; // fallback subdomain
 });

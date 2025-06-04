@@ -29,6 +29,11 @@ export default async function RootLayout({
 }>) {
   const subdomain = await getSubdomainFromHeaders();
   const shopId = await fetchShopIdBySubdomain(subdomain);
+
+  if (!shopId) {
+    console.log("Error in Fetching ShopId", subdomain);
+  }
+
   const shopData = await fetchShopDetails(shopId);
   const shopOpenData = await fetchShopTiming(shopId);
   const shopMenuType = await fetchAllShopMenuType(shopId);
@@ -66,10 +71,8 @@ export default async function RootLayout({
             "lg:max-w-full h-full w-full justify-self-center"
           )}
         >
-          <SlowConnectionPopup/>
-          <Providers>
-            {children}
-          </Providers>
+          <SlowConnectionPopup />
+          <Providers>{children}</Providers>
         </main>
         <Toaster position="top-center" duration={3000} />
       </body>
@@ -80,6 +83,11 @@ export default async function RootLayout({
 export async function generateMetadata() {
   const subdomain = await getSubdomainFromHeaders();
   const shopId = await fetchShopIdBySubdomain(subdomain);
+
+  if (!shopId) {
+    console.log("Error in Fetching ShopId", subdomain);
+  }
+
   const shopData = await fetchShopDetails(shopId);
   const parsedShopData = shopData ? JSON.parse(shopData.data) : null;
 
