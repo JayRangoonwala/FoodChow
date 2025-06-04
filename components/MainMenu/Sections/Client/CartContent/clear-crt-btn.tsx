@@ -45,9 +45,9 @@ export default function ClearCrtBtn() {
     <>
       {itemsInCart && (
         <>
-          <Button variant={"outline"} onClick={() => setOpen(true)}>
-            <Trash />
-            Clear Cart
+          <Button variant={"outline"} size="sm" className="border border-gray-300 rounded-full text-[#d32f2f] px-3 py-1 h-8 flex items-center gap-1 hover:bg-[#ffeaea]" onClick={() => setOpen(true)}>
+            <Trash className="w-4 h-4 mr-1 text-[#d32f2f]" />
+            <span className="text-xs font-semibold">Clear Cart</span>
           </Button>
           <ClearCartModal open={open} setOpen={setOpen} />
         </>

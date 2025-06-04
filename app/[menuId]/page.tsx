@@ -2,6 +2,7 @@
 
 import MainMenuSkeleton from "@/components/Loading/MainMenuSkeleton";
 import MainMenuPage from "@/components/MainMenu";
+import MainMenuNew from "@/components/MainMenu/New";
 import { getSubdomainFromHeaders } from "@/lib/getSubdomain";
 import {
   fetchAllShopMenuType,
@@ -37,9 +38,12 @@ export default async function Page({
 
   return (
     <>
-      <Suspense fallback={<MainMenuSkeleton />}>
+      {/* <Suspense fallback={<MainMenuSkeleton />}>
         <MainMenuPage mainMenu={false} menuId={menuId} />
-      </Suspense>
+      </Suspense> */}
+      <div className="w-full">
+        <MainMenuNew mainMenu={false} menuId={menuId} />
+      </div>
     </>
   );
 }

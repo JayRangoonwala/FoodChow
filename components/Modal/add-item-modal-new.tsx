@@ -14,17 +14,20 @@ export default function AddItemModal({
   exists,
   itemData,
   ctgId,
+  open,
+  onClose,
 }: {
   exists: boolean;
   itemData: any;
   ctgId: number;
+  open: boolean;
+  onClose: () => void;
 }) {
   console.log(itemData);
   // const [loading, setLoading] = useState(false);
   const { setServiceModalOpen } = useToggleModalStore();
   const { service } = useServiceStore();
 
-  const [openAddItem, setOpenAddItem] = useState<boolean>(false);
   const [customizationOptions, setCustomizationOptions] = useState<any>();
   const { pendingAddItemId, setPendingAddItemId } = usePendingAddItemStore();
 
@@ -44,46 +47,40 @@ export default function AddItemModal({
     if (!pendingAddItemId) return;
 
     if (service && pendingAddItemId === itemData.ItemId) {
-      setOpenAddItem(true);
       fetchCustomizationOptions(itemData.ItemId);
       setPendingAddItemId(null);
     }
   }, [service, pendingAddItemId]);
 
+  useEffect(() => {
+    if (open && itemData?.ItemId) {
+      fetchCustomizationOptions(itemData.ItemId);
+    }
+  }, [open, itemData]);
+
   const handleAddButtonClick = async () => {
     setPendingAddItemId(null);
     if (service) {
-      setOpenAddItem(true);
       fetchCustomizationOptions(itemData.ItemId);
+      onClose();
     } else {
       setPendingAddItemId(itemData.ItemId);
       setServiceModalOpen(true);
+      onClose();
     }
   };
 
   return (
-    <>
-      <Dialog open={openAddItem} onOpenChange={setOpenAddItem}>
-        <Button
-          variant={"outline"}
-          className={cn(exists && "absolute top-[112px] left-[34px]")}
-          onClick={handleAddButtonClick}
-          id="add-item-button"
-          // disabled={loading}
-        >
-          {/* {loading ? <Loader2 className="animate-spin" /> : "Add"} */}
-          Add
-        </Button>
-        <DialogContent className="max-h-[85%] pb-0">
-          <AddItemModalContent
-            itemData={itemData}
-            customizationOptions={customizationOptions}
-            exists={exists}
-            ctgId={ctgId}
-            setOpenAddItem={setOpenAddItem}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-h-[85%] pb-0">
+        <AddItemModalContent
+          itemData={itemData}
+          customizationOptions={customizationOptions}
+          exists={exists}
+          ctgId={ctgId}
+          setOpenAddItem={onClose}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

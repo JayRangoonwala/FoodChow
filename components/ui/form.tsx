@@ -15,6 +15,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { Info } from "lucide-react"
 
 const Form = FormProvider
 
@@ -144,14 +145,18 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   }
 
   return (
+    <div className="flex items-center gap-1">
+      
+    <Info className="w-4 h-4" />
     <p
       data-slot="form-message"
       id={formMessageId}
       className={cn("text-destructive text-sm", className)}
       {...props}
-    >
+      >
       {body}
     </p>
+      </div>
   )
 }
 

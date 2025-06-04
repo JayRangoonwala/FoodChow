@@ -41,7 +41,25 @@ export default async function Header({
   }
 
   const parsedShopData = JSON.parse(shopData.data);
-  const parsedShopOpenData = JSON.parse(shopOpenData.data);
+
+  let parsedShopOpenData;
+
+  if (
+    !shopOpenData ||
+    typeof shopOpenData.data !== "string" ||
+    shopOpenData.data.startsWith("Object reference")
+  ) {
+    // Fallback static data
+    parsedShopOpenData = [
+      {
+        online_ordering: 1, // 1 = online ordering enabled
+        ClosedOrNot: 0, // 0 = open
+        b_hours_settings: 1, // 1 = normal business hours
+      },
+    ];
+  } else {
+    parsedShopOpenData = JSON.parse(shopOpenData.data);
+  }
 
   const countryCodes = await fetchCountryWithCountryCode();
 

@@ -16,13 +16,14 @@ export default function MenuButtons({
   return (
     <>
       <Link href={"/"}>
-        <Button variant={pathname === "/" ? "default" : "outline"}>
+        <Button className="rounded-full p-1 px-5 text-xs h-7 font-normal " variant={pathname === "/" ? "default" : "outline"}>
           Main Menu
         </Button>
       </Link>
       {parsedShopMenuType.menu.map((item: any, id: any) => (
         <Link href={`/${item.menu_url}`} key={id}>
-          <Button
+          <Button 
+            className="rounded-full p-1 px-5 text-xs h-7 font-normal"
             variant={pathname.includes(item.menu_url) ? "default" : "outline"}
           >
             {item.menu_name}

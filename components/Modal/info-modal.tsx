@@ -40,7 +40,7 @@ export default function InfoModal({
             </div>
             <div>
               <h3 className="text-lg text-primary font-medium">Timing</h3>
-              {parsedShopOpenData.map((todayTimingData: any, key: any) => {
+              {Array.isArray(parsedShopOpenData) && parsedShopOpenData.map((todayTimingData: any, key: any) => {
                 let timing = "";
                 if (todayTimingData.HrsDay === 1) {
                   timing = "Open 24 hours";

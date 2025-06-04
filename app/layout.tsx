@@ -13,6 +13,8 @@ import LoadTheme from "@/components/load-theme";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/sonner";
 import { getSubdomainFromHeaders } from "@/lib/getSubdomain";
+import { Providers } from "./Provider";
+import SlowConnectionPopup from "./SlowConnection";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -61,10 +63,13 @@ export default async function RootLayout({
               parsedShopMenuType.menu.length >= 1
               ? "pt-36 lg:pt-28"
               : "pt-16",
-            "lg:max-w-[1440px] h-full w-full justify-self-center"
+            "lg:max-w-full h-full w-full justify-self-center"
           )}
         >
-          {children}
+          <SlowConnectionPopup/>
+          <Providers>
+            {children}
+          </Providers>
         </main>
         <Toaster position="top-center" duration={3000} />
       </body>

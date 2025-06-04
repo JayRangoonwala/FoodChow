@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import PaymentMetod from "./payment-methods";
 import GuestForm from "@/components/Forms/guest-form";
 import { useCheckoutStore } from "@/store/checkoutStore";
+import { Mail, PhoneCall, User } from "lucide-react";
 
 export default function LeftSection({
   parsedCountryCodes,
@@ -27,6 +28,14 @@ export default function LeftSection({
   const [accActivated, setAccActivated] = useState<any>(null);
 
   const { gstDetailsSaved, setGstDetailsSaved } = useCheckoutStore();
+
+  const [userInfo, setUserInfo] = useState<null | {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+    countryCode: string;
+  }>(null);
 
   useEffect(() => {
     const selectedOption = localStorage.getItem("selectedOption");
@@ -54,9 +63,59 @@ export default function LeftSection({
     }
   }, [gstDetailsSaved]);
 
+  useEffect(() => {
+    // Function to load userInfo from localStorage
+    const loadUserInfo = () => {
+      const stored = localStorage.getItem("userInfo");
+      if (stored) {
+        setUserInfo(JSON.parse(stored));
+        setAccActivated(true);
+        setCurrentActive("payment_method");
+      } else {
+        setUserInfo(null);
+      }
+    };
+
+    // Load on mount
+    loadUserInfo();
+
+    // Listen for updates
+    window.addEventListener("userInfoUpdated", loadUserInfo);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("userInfoUpdated", loadUserInfo);
+    };
+  }, []);
+
   return (
     <Card>
       <CardContent>
+        {userInfo && (
+          <div className="border rounded-lg p-4 mb-4 bg-white flex flex-col gap-2 max-sm:text-sm">
+            <div className="flex items-center gap-2  max-sm:gap-3">
+              <span className="font-semibold flex items-center gap-2 flex-1">
+                <User className="w-4 h-4" />
+                {userInfo.firstName} {userInfo.lastName}
+              </span>
+              <span className="flex items-center gap-1">
+                <PhoneCall className="w-4 h-4" />
+                {userInfo.mobile}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              <span>{userInfo.email}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" checked readOnly className="mr-2" />
+              <span className="text-xs">
+                You agree to be remembered on this device and to receive
+                money-off coupons & exclusive offers
+              </span>
+            </div>
+          </div>
+        )}
         <Accordion
           type="single"
           collapsible
@@ -67,24 +126,26 @@ export default function LeftSection({
           }}
           defaultValue={gstDetailsSaved ? "payment_method" : "contact_form"}
         >
-          <AccordionItem value="contact_form">
-            <AccordionTrigger
-              className={cn(
-                "h-3 text-lg py-8 px-3 bg-primary text- text-white *:stroke-white items-center",
-                currentActive === "contact_form" && "rounded-b-none"
-              )}
-            >
-              CONTACT
-            </AccordionTrigger>
-            <AccordionContent className="border p-3 border-t-0 border-gray-300 rounded-b-md">
-              {parsedUserOptions && (
-                <GuestForm
-                  parsedCountryCodes={parsedCountryCodes}
-                  parsedUserOptions={parsedUserOptions}
-                />
-              )}
-            </AccordionContent>
-          </AccordionItem>
+          {!userInfo && (
+            <AccordionItem value="contact_form">
+              <AccordionTrigger
+                className={cn(
+                  "h-3 text-lg py-8 px-3 bg-primary text- text-white *:stroke-white items-center",
+                  currentActive === "contact_form" && "rounded-b-none"
+                )}
+              >
+                CONTACT
+              </AccordionTrigger>
+              <AccordionContent className="border p-3 border-t-0 border-gray-300 rounded-b-md">
+                {parsedUserOptions && (
+                  <GuestForm
+                    parsedCountryCodes={parsedCountryCodes}
+                    parsedUserOptions={parsedUserOptions}
+                  />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          )}
           <AccordionItem value="selected_method" disabled={!accActivated}>
             <AccordionTrigger
               className={cn(

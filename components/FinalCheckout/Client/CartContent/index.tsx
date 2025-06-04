@@ -53,10 +53,24 @@ export default function CartContent() {
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
   useEffect(() => {
-    const cartData = localStorage.getItem("cartItems");
-    if (cartData) {
-      const parsedData = JSON.parse(cartData);
-      setCartItems(parsedData);
+    try{
+      const cartData = localStorage.getItem("cartItems");
+      
+      if (cartData) {
+        const {value,expiry} = JSON.parse(cartData);
+        const now = Date.now();
+        
+        if(expiry && now > expiry){
+          console.warn("Cart Data has Expired !!");
+          localStorage.removeItem("cartItems");
+          setCartItems([]);
+        }
+        else{
+          setCartItems(Array.isArray(value) ? value : []);
+        }
+      }
+    }catch(error){
+      console.log("Error in parsing",error);
     }
 
     const orderMethod = localStorage.getItem("orderMethod");
@@ -99,13 +113,22 @@ export default function CartContent() {
     setRemoveDialogOpen(true);
   };
 
+  const setWithExpiry = (key: string, value: any, ttl: number) => {
+    const now = new Date();
+    const item = {
+      value: value,
+      expiry: now.getTime() + ttl, // ttl in milliseconds
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
   const confirmRemoveItem = () => {
     if (itemToRemove) {
       setCartItems((prevItems: CartItem[]) => {
         const updatedItems = prevItems.filter(
           (item) => item.itemString !== itemToRemove
         );
-        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+        setWithExpiry("cartItems", updatedItems,7200000);
         return updatedItems;
       });
       setItemToRemove(null);
@@ -134,7 +157,7 @@ export default function CartContent() {
         }
         return item;
       });
-      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      setWithExpiry("cartItems", updatedItems,7200000);
       return updatedItems;
     });
   };

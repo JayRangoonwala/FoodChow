@@ -21,8 +21,26 @@ export default function MobileMenuFooter() {
 
   useEffect(() => {
     // Get cart items
+    try {
     const cartData = localStorage.getItem("cartItems");
-    setCartItems(cartData ? JSON.parse(cartData) : []);
+
+    if (cartData) {
+      const { value, expiry } = JSON.parse(cartData);
+      const now = Date.now();
+
+      // Check if the data has expired
+      if (expiry && now > expiry) {
+        console.warn("Cart data has expired");
+        localStorage.removeItem("cartItems");
+        setCartItems([]);
+      } else {
+        setCartItems(Array.isArray(value) ? value : []);
+      }
+    }
+  } catch (err) {
+    console.error("Error parsing cart data:", err);
+    setCartItems([]);
+  }
 
     // Get order method/charges
     const orderMethodData = localStorage.getItem("orderMethod");
@@ -60,15 +78,15 @@ export default function MobileMenuFooter() {
   }, [cartItems, newItem]);
 
   // Calculate totals
-  const itemCount = cartItems.length;
-  const itemTotal = cartItems.reduce(
-    (total, item) =>
-      total + (item.itemCartSubTotal || 0) * (item.order_item_qty || 0),
-    0
-  );
-
-  const chargeTotal = otherServices?.amount || 0;
-  const totalPrice = itemTotal + chargeTotal;
+    const itemCount = cartItems.length;
+    const itemTotal = cartItems.reduce(
+      (total, item) =>
+        total + (item.itemCartSubTotal || 0) * (item.order_item_qty || 0),
+      0
+    );
+    
+    const chargeTotal = otherServices?.amount || 0;
+    const totalPrice = itemTotal + chargeTotal;
 
   return (
     <>

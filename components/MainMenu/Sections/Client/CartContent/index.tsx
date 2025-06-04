@@ -49,10 +49,25 @@ export default function CartContent() {
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
   useEffect(() => {
-    const cartData = localStorage.getItem("cartItems");
-    if (cartData) {
-      const parsedData = JSON.parse(cartData);
-      setCartItems(parsedData);
+    try {
+      const cartData = localStorage.getItem("cartItems");
+
+      if (cartData) {
+        const { value, expiry } = JSON.parse(cartData);
+        const now = Date.now();
+
+        // Check if the data has expired
+        if (expiry && now > expiry) {
+          console.warn("Cart data has expired");
+          localStorage.removeItem("cartItems");
+          setCartItems([]);
+        } else {
+          setCartItems(Array.isArray(value) ? value : []);
+        }
+      }
+    } catch (err) {
+      console.error("Error parsing cart data:", err);
+      setCartItems([]);
     }
 
     const orderMethod = localStorage.getItem("orderMethod");
@@ -95,13 +110,23 @@ export default function CartContent() {
     setRemoveDialogOpen(true);
   };
 
+  const setWithExpiry = (key: string, value: any, ttl: number) => {
+    const now = new Date();
+    const item = {
+      value: value,
+      expiry: now.getTime() + ttl, // ttl in milliseconds
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
+
   const confirmRemoveItem = () => {
     if (itemToRemove) {
       setCartItems((prevItems: CartItem[]) => {
         const updatedItems = prevItems.filter(
           (item) => item.itemString !== itemToRemove
         );
-        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+        setWithExpiry("cartItems", updatedItems,7200000);
         return updatedItems;
       });
       setItemToRemove(null);
@@ -130,7 +155,7 @@ export default function CartContent() {
         }
         return item;
       });
-      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      setWithExpiry("cartItems", updatedItems,7200000);
       return updatedItems;
     });
   };
@@ -180,6 +205,8 @@ export default function CartContent() {
     setExcludedTaxTotal(excludedTaxSum);
   }, [cartItems]);
 
+  // console.log(cartItems);
+
   const itemTotal = cartItems.reduce(
     (total: number, item: CartItem) =>
       total + item.itemCartSubTotal * item.order_item_qty,
@@ -195,7 +222,7 @@ export default function CartContent() {
     <>
       {cartItems && cartItems.length >= 1 ? (
         <div className="flex flex-col gap-2 h-full">
-          <div className="flex-1 overflow-scroll">
+          <div className="flex-1 overflow-y-auto text-sm pr-1 pb-6">
             {cartItems.map((cartItem: CartItem, index: number) => (
               <React.Fragment key={index}>
                 <CartItem
@@ -211,58 +238,58 @@ export default function CartContent() {
               </React.Fragment>
             ))}
           </div>
-          <Separator className="h-1 bg-muted" />
-          <div className="flex justify-between items-center text-lg font-semibold">
-            <span className="text-muted-foreground">Item Total:</span>
-            <span className="text-muted-foreground">
-              {shopData?.currency_symbol}
-              {formatAmount(itemTotal)}
-            </span>
-          </div>
-          <Separator className="h-1 bg-muted" />
-          {/* Tax Details */}
-          {Object.entries(taxDetails).length > 0 && (
-            <>
-              {Object.entries(taxDetails).map(
-                ([taxName, amount]: [string, number]) => (
-                  <div
-                    key={taxName}
-                    className="flex justify-between items-center text-lg font-semibold text-muted-foreground"
-                  >
-                    <span>{taxName}</span>
-                    <span>
-                      {shopData?.currency_symbol}
-                      {formatAmount(amount)}
-                    </span>
-                  </div>
-                )
-              )}
-              <Separator className="h-1 bg-muted" />
-            </>
-          )}
-          <div className="space-y-2">
-            {orderMethod && otherServices && (
+          {/* Summary and Checkout Section (always visible) */}
+          <div>
+            <Separator className="h-1 bg-muted" />
+            <div className="flex justify-between items-center text-base font-medium text-gray-500 mb-1">
+              <span>Item Total</span>
+              <span>
+                {shopData?.currency_symbol}
+                {formatAmount(itemTotal)}
+              </span>
+            </div>
+            <Separator className="h-1 bg-muted" />
+            {/* Tax Details */}
+            {Object.entries(taxDetails).length > 0 && (
               <>
-                <div className="flex justify-between items-center text-lg font-semibold text-muted-foreground">
-                  <span>{otherServices.label}</span>
-                  <span>
-                    {shopData?.currency_symbol}
-                    {formatAmount(otherServices.amount)}
-                  </span>
-                </div>
+                {Object.entries(taxDetails).map(
+                  ([taxName, amount]: [string, number]) => (
+                    <div
+                      key={taxName}
+                      className="flex justify-between items-center text-base font-medium text-gray-500 mb-1"
+                    >
+                      <span>{taxName}</span>
+                      <span>
+                        {shopData?.currency_symbol}
+                        {formatAmount(amount)}
+                      </span>
+                    </div>
+                  )
+                )}
                 <Separator className="h-1 bg-muted" />
               </>
             )}
-            <div className="flex justify-between items-center text-lg font-semibold">
-              <span>Total:</span>
-              <span>
-                {shopData?.currency_symbol}
-                {formatAmount(grandTotal)}
-              </span>
+            <div className="space-y-1">
+              {orderMethod && otherServices && (
+                <>
+                  <div className="flex justify-between items-center text-base font-medium text-gray-500 mb-1">
+                    <span>{otherServices.label}</span>
+                    <span>
+                      {shopData?.currency_symbol}
+                      {formatAmount(otherServices.amount)}
+                    </span>
+                  </div>
+                  <Separator className="h-1 bg-muted" />
+                </>
+              )}
+              <div className="flex justify-between items-center text-base font-extrabold text-gray-800 mt-2 mb-2 tracking-tight">
+                <span>Total</span>
+                <span className="text-primary text-lg font-black">{shopData?.currency_symbol}{formatAmount(grandTotal)}</span>
+              </div>
+              <Link href={"/final-checkout"} className="w-full">
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold rounded-md py-2 text-xs tracking-wide shadow-md uppercase">Proceed to Checkout</Button>
+              </Link>
             </div>
-            <Link href={"/final-checkout"} className="w-full">
-              <Button className="w-full">Proceed to Checkout</Button>
-            </Link>
           </div>
         </div>
       ) : (

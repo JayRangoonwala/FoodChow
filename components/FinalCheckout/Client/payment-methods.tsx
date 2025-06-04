@@ -74,7 +74,7 @@ export default function PaymentMetod() {
   const [isFetching, setIsFetching] = useState(false);
 
   const [orderNotes, setOrderNotes] = useState<any>();
-
+  const [cartItems,setCartItems] = useState<any>([]);
   const [placingOrder, setIsPlacingOrder] = useState<any>();
 
   useEffect(() => {
@@ -106,9 +106,16 @@ export default function PaymentMetod() {
     try {
       setIsPlacingOrder(true);
       const orderModel: any = {};
-      const cartItems = localStorage.getItem("cartItems")
-        ? JSON.parse(localStorage.getItem("cartItems") || "")
-        : [];
+
+      const cartData = localStorage.getItem("cartItems");
+      if(cartData){
+        const {value} = JSON.parse(cartData);
+        setCartItems(value ? value : []);
+      }
+
+      // const cartItems = localStorage.getItem("cartItems")
+      //   ? JSON.parse(localStorage.getItem("cartItems") || "")
+      //   : [];
 
       const email = localStorage.getItem("xEmail")
         ? localStorage.getItem("xEmail") || ""

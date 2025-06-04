@@ -444,39 +444,66 @@ export default function AddItemModalContent({
     }
   };
 
+  const setWithExpiry = (key: string, value: any, ttl: number) => {
+    const now = new Date();
+    const item = {
+      value: value,
+      expiry: now.getTime() + ttl, // ttl in milliseconds
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
   const saveItemsInLocalStorage = (cartItem: any) => {
     if (!cartItem) {
       toast.error("Error adding item to cart");
       return;
     }
 
-    const cartItems = JSON.parse(
-      localStorage.getItem("cartItems") || "[]"
-    ) as any[];
+    try {
+      const cartData = localStorage.getItem("cartItems");
+      let cartItems: any[] = [];
+      const now = Date.now();
 
-    // Check if item with same itemString already exists
-    const existingItemIndex = cartItems.findIndex(
-      (item) => item.itemString === cartItem.itemString
-    );
+      if (cartData) {
+        const parsedData = JSON.parse(cartData);
+        const { value, expiry } = parsedData;
 
-    if (existingItemIndex !== -1) {
-      // Item exists, update quantity and total price
-      const existingItem = cartItems[existingItemIndex];
-      const newQty = existingItem.order_item_qty + cartItem.order_item_qty;
+        // Check if the data has expired
+        if (expiry && now > expiry) {
+          console.warn("Cart data has expired");
+          localStorage.removeItem("cartItems");
+        } else {
+          cartItems = Array.isArray(value) ? value : [];
+        }
+      }
 
-      cartItems[existingItemIndex] = {
-        ...cartItem,
-        order_item_qty: newQty,
-      };
-    } else {
-      // New item, just add to cart
-      cartItems.unshift(cartItem);
-      toast.success("Item added to cart");
+      // Check if item with the same itemString already exists
+      const existingItemIndex = cartItems.findIndex(
+        (item) => item.itemString === cartItem.itemString
+      );
+
+      if (existingItemIndex !== -1) {
+        // Item exists, update quantity
+        const existingItem = cartItems[existingItemIndex];
+        const newQty = existingItem.order_item_qty + cartItem.order_item_qty;
+
+        cartItems[existingItemIndex] = {
+          ...existingItem,
+          order_item_qty: newQty,
+        };
+      } else {
+        // New item, add to cart
+        cartItems.unshift(cartItem);
+        toast.success("Item added to cart");
+      }
+
+      // Save updated cart data with expiry
+      setWithExpiry("cartItems", cartItems, 7200000);
+      setNewItem(cartItem);
+      setOpenAddItem(false);
+    } catch (error) {
+      console.error("Error updating cart data:", error);
     }
-
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    setNewItem(cartItem);
-    setOpenAddItem(false);
   };
 
   return (
@@ -493,12 +520,14 @@ export default function AddItemModalContent({
             </DialogDescription>
           </DialogHeader>
         ) : (
-          <div className="flex flex-col text-center">
-            <img
-              src={FoodChowData.menuImages + itemData.ItemImage}
-              alt={itemData.ItemName}
-              className="w-full h-[200px] rounded-md object-cover"
-            />
+          <div className="flex flex-col text-start items-center">
+            <div className="w-[250px] h-[150px] flex flex-col items-center justify-center">
+              <img
+                src={FoodChowData.menuImages + itemData.ItemImage}
+                alt={itemData.ItemName}
+                className="w-[250px] h-[150px] object-cover rounded-md"
+              />
+            </div>
             <h3 className="text-xl font-semibold">{itemData.ItemName}</h3>
             <p className="text-muted-foreground">{itemData.Description}</p>
             <div className="flex w-[150px] self-center mt-2">

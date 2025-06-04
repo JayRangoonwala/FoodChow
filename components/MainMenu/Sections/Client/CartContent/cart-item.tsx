@@ -19,20 +19,16 @@ export default function CartItem({
   const currencySymbol = shopData?.currency_symbol;
 
   return (
-    <div className="flex py-2 overflow-auto">
-      <div className="left-side flex flex-1 flex-col gap-1">
-        <h4 className="font-semibold text-lg text-start">
-          {item.order_itemname}
-        </h4>
-        <div className="flex flex-col text-muted-foreground text-start">
+    <div className="flex py-1 px-1 mb-1 bg-white border border-gray-100 rounded-md shadow-sm items-center">
+      <div className="flex-1 flex flex-col gap-0.5">
+        <h4 className="font-semibold text-xs text-start leading-tight mb-0.5">{item.order_itemname}</h4>
+        <div className="flex flex-col text-muted-foreground text-[11px] text-start leading-tight">
           {/* SIZES */}
           {item.order_size && (
             <span>
-              {item.order_size} (+{currencySymbol}
-              {item.subTotal})
+              {item.order_size} (+{currencySymbol}{item.subTotal})
             </span>
           )}
-
           {/* CUST OPTIONS */}
           {item.custom_ids &&
             item.custom_ids.length >= 1 &&
@@ -41,7 +37,6 @@ export default function CartItem({
               .split(",")
               .slice(0, -1)
               .map((item: any, index: any) => <span key={index}>{item}</span>)}
-
           {/* PREFERENCES */}
           {item.preference_names &&
             item.preference_names !== "" &&
@@ -49,41 +44,37 @@ export default function CartItem({
               .split(",")
               .slice(0, -1)
               .map((item: any, index: any) => <span key={index}>{item}</span>)}
-
           {item.item_notes && item.item_notes !== "" && (
-            <span className="text-muted-foreground">
-              Item Note: {item.item_notes}
-            </span>
+            <span className="text-muted-foreground">Item Note: {item.item_notes}</span>
           )}
         </div>
       </div>
-      <div className="right-side flex flex-col">
-        <span className="text-primary font-semibold self-end text-lg">
-          {currencySymbol}
-          {Number(item.itemCartSubTotal * item.order_item_qty).toFixed(2)}
+      <div className="flex flex-col items-end gap-1 min-w-[90px]">
+        <span className="text-[#d32f2f] font-bold self-end text-xs leading-tight">
+          {currencySymbol}{Number(item.itemCartSubTotal * item.order_item_qty).toFixed(2)}
         </span>
-        <div className="flex gap-1 items-center">
+        <div className="flex items-center gap-0.5 mt-0.5">
           <Button
             variant={"outline"}
-            className="rounded-full h-8 w-8"
+            className="rounded-full h-6 w-6 p-0 border-0 text-[#d32f2f] hover:bg-[#ffeaea] flex items-center justify-center"
             onClick={onRemove}
           >
-            <Trash2 />
+            <Trash2 className="w-3 h-3" />
           </Button>
-          <div className="flex h-10 text-center items-center">
+          <div className="flex h-7 text-center items-center">
             <Button
               variant={"outline"}
-              className="font-bold text-2xl rounded-none w-[30px] rounded-l-md border-r-0 border-input pt-1"
+              className="font-bold text-base rounded-none w-6 h-6 rounded-l-md border-r-0 border-input p-0"
               onClick={onDecrement}
             >
               -
             </Button>
-            <div className="border-y border-input w-[30px] shadow-xs h-9 content-center">
+            <div className="border-y border-input w-6 h-6 flex items-center justify-center text-xs font-bold bg-white">
               {item.order_item_qty}
             </div>
             <Button
               variant={"outline"}
-              className="font-bold text-xl rounded-none w-[30px] rounded-r-md border-l-0 border-input"
+              className="font-bold text-base rounded-none w-6 h-6 rounded-r-md border-l-0 border-input p-0"
               onClick={onIncrement}
             >
               +
