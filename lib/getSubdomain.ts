@@ -8,22 +8,14 @@ export const getSubdomainFromHeaders = cache(async () => {
   const headersList = await headers();
   const host = headersList.get("host") || "";
 
-  console.log(headersList)
-  console.log(host)
-
-  if (
-    host === "foodchow.in" || 
-    host === "www.foodchow.in" || 
-    host === "food-chow.vercel.app"
-  ) {
-    return ""; // This is the default homepage or dev link
+  if (host === "foodchow.in") {
+    return ""; // default or homepage
   }
 
   const parts = host.split(".");
   if (parts.length > 2) {
     return parts[0] === "www" ? parts[1] : parts[0];
   }
-  console.log(parts)
 
-  return "foodchowdemoindia"; // fallback subdomain
+  return "foodchowdemoindia"; // fallback
 });
