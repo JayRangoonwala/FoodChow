@@ -8,14 +8,17 @@ export const getSubdomainFromHeaders = cache(async () => {
   const headersList = await headers();
   const host = headersList.get("host") || "";
 
+  console.log(headersList.get("connection"));
+  console.log(typeof headersList)
+
   if (host === "foodchow.in") {
     return ""; // default or homepage
   }
 
-  const parts = host.split(".");
-  if (parts.length > 2) {
-    return parts[0] === "www" ? parts[1] : parts[0];
-  }
+  // const parts = host.split(".");
+  // if (parts.length > 2) {
+  //   return parts[0] === "www" ? parts[1] : parts[0];
+  // }
 
   return "foodchowdemoindia"; // fallback
 });

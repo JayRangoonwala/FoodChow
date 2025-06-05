@@ -12,6 +12,7 @@ export const fetchShopIdBySubdomain = cache(
       const res = await apiClient.get(
         `FoodChowWD/GetShopIdByMainDomain?maindomain=${subDomain}&flag=0`
       );
+      console.log(res);
       const parsedData: ShopIdResponse[] = JSON.parse(res.data.data);
       return parsedData[0]?.shop_id || null;
     } catch (err) {
