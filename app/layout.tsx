@@ -16,9 +16,6 @@ import { getSubdomainFromHeaders } from "@/lib/getSubdomain";
 import { Providers } from "./Provider";
 import SlowConnectionPopup from "./SlowConnection";
 import { MyContextProvider } from "@/context/MyContext";
-import { headers } from "next/headers";
-import SubdomainHydrator from "@/components/SubdomainHydrator";
-
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
@@ -30,25 +27,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const headersList = await headers();
-  const host = headersList.get('host') || "";
-  console.log(headersList)
-  // console.log(host,"host");
-
-  var header = false;
-  if (host == 'localhost:3001'){
-    header = false;
-  }
-
-  const subdomai = host.split('.')[0];   
-  console.log(subdomai)                 // e.g., foodchowdemoindia
-  // console.log(subdomain,"subdomain");
-  // 👇 Only rewrite when accessing root (homepage) via subdomain
-  if (subdomai !== 'www' && subdomai !== 'localhost:3001') {
-    header = true;
-  }
-  console.log(header);
 
   const subdomain = await getSubdomainFromHeaders();
   const shopId = await fetchShopIdBySubdomain(subdomain);
@@ -76,7 +54,6 @@ export default async function RootLayout({
         <NextTopLoader showSpinner={false} color="var(--primary)" />
 
         <Header shopData={shopData} shopOpenData={shopOpenData} />
-        {header && <SubdomainHydrator host={host} />}
         <SubHeader shopMenuType={shopMenuType} />
         <LoadTheme shopId={shopId} shopData={parsedShopData} />
 

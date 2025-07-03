@@ -27,7 +27,6 @@ import {
 } from "@/lib/shopService";
 import { getSubdomainFromHeaders } from "@/lib/getSubdomain";
 import DealModal from "@/components/Modal/DealModalBox/DealModal";
-import { useSubdomainStore } from "@/store/subDomainStore";
 
 export default function ClientMenuList({
   dealList,
@@ -51,8 +50,6 @@ export default function ClientMenuList({
   const [openDealModal, setOpenDealModal] = useState<any>(null);
   const { service: storeService, setService: setServiceStore } =
     useServiceStore();
- const subdomainStore = useSubdomainStore((state) => state.subdomain);
-  console.log(subdomainStore)
   // console.log(parsedShopData)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
