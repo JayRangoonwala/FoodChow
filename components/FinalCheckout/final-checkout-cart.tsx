@@ -11,18 +11,21 @@ export default function FinalCheckoutCart({
   className?: string;
 }) {
   return (
-    <Card className={cn(className, "border-0 h-full gap-0 pb-0")}>
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="text-primary font-medium flex justify-between items-center">
-          <span>YOUR CART</span> <ClearCrtBtn />
-        </CardTitle>
-      </CardHeader>
-      <Separator className="bg-muted flex-shrink-0" />
-      <CardContent className="px-3 h-full">
-        <div className="h-full pb-2">
-          <CartContent />
-        </div>
-      </CardContent>
-    </Card>
+    // <Card className={cn(className, "border-0 h-full gap-0 pb-0")}>
+    //   <CardHeader className="flex-shrink-0">
+    //     <CardTitle className="text-primary font-medium flex justify-between items-center">
+    //       <span>YOUR CART</span> <ClearCrtBtn />
+    //     </CardTitle>
+    //   </CardHeader>
+    //   <Separator className="bg-muted flex-shrink-0" />
+    //   <CardContent className="px-3 h-full">
+    //     <div className="h-full pb-2">
+    //       <CartContent />
+    //     </div>
+    //   </CardContent>
+    // </Card>
+  <>
+    <CartContent />
+  </>
   );
 }

@@ -7,8 +7,10 @@ import { cn } from "@/lib/utils";
 import { useServiceStore } from "@/store/serviceStore";
 import { useToggleModalStore } from "@/store/toggleModalStore";
 import { fetchMenuCustomization } from "@/lib/shopService";
-import AddItemModalContent from "./Sections/add-item-modal-content";
+// import AddItemModalContent from "./Sections/add-item-modal-content";
 import { usePendingAddItemStore } from "@/store/addItemStore";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import AddItemModalContent from "./Sections/add-item-modal-content2";
 
 export default function AddItemModal({
   exists,
@@ -23,7 +25,7 @@ export default function AddItemModal({
   open: boolean;
   onClose: () => void;
 }) {
-  console.log(itemData);
+  // console.log(itemData);
   // const [loading, setLoading] = useState(false);
   const { setServiceModalOpen } = useToggleModalStore();
   const { service } = useServiceStore();
@@ -72,7 +74,8 @@ export default function AddItemModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[85%] pb-0">
+      <DialogContent className="max-h-[85%] p-3">
+        <DialogTitle></DialogTitle>
         <AddItemModalContent
           itemData={itemData}
           customizationOptions={customizationOptions}

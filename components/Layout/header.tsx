@@ -88,7 +88,7 @@ export default async function Header({
   // === 👇 NEW: Get today's timing ===
   const dayMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const todayName = dayMap[new Date().getDay()];
-  const todayTimingData = parsedShopData.FoodShopTimingList.find(
+  const todayTimingData = parsedShopData?.FoodShopTimingList?.find(
     (item: ShopTiming) => item.dayname === todayName
   );
 
@@ -117,7 +117,7 @@ export default async function Header({
   }
 
   return (
-    <header className="h-16 bg-white fixed w-full lg:px-6 px-3 z-10 shadow-md">
+    <header className="h-16 bg-white fixed w-full lg:px-6 px-3 z-10 shadow-md" id="main-header">
       <div className="h-full flex items-center justify-between lg:hidden">
         <MobileDrawer
           parsedShopData={parsedShopData}

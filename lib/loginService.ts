@@ -50,3 +50,13 @@ export const ResetPassword = async (data: any) => {
         return {error:error.response.data.message};
     }
 }
+
+export const LoginWithSocial = async (data: any) => {
+    try {
+        const res = await axios.post(`https://api.foodchow.com/api/UserMaster/PerformUserLoginWithSocialMedia`, data);
+        return res.data;
+    } catch (error: any) {
+        console.error("Error resetting password:", error);
+        return {error:error.response.data.message};
+    }
+}

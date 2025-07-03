@@ -44,8 +44,8 @@ const MainMenuNew = async ({
   return (
     <>
       {/* Top Navigation Bar */}
-      <div className="w-full bg-[#e6f6fa] max-h-[55px] border-y border-gray-200 sticky top-26 z-50">
-        <Categories restaurantMenu={restaurantMenu} />  
+      <div className="w-full max-lg:hidden bg-[#e6f6fa] max-h-[55px] border-y border-gray-200 sticky top-26 z-50">
+        <Categories restaurantMenu={restaurantMenu} />
       </div>
       <div className="flex h-screen bg-[#f7fafc] overflow-hidden">
         <section className="flex flex-1 h-screen w-full mx-auto gap-6 px-2 lg:px-6 py-6">
@@ -64,6 +64,21 @@ const MainMenuNew = async ({
             </div>
           </aside>
         </section>
+        <Popover>
+          <div className="fixed left-1/2 -translate-x-1/2 bottom-[80px] justify-self-center z-50 lg:hidden">
+            <PopoverTrigger asChild>
+              <Button className="flex h-14 w-32 rounded-full shadow-lg bg-primary hover:bg-primary/90 transition-colors">
+                <div className="h-full w-full place-items-center content-center">
+                  <MenuLogo className="!w-7 !h-7 text-white" />
+                </div>
+                <span className="text-white font-medium">Menu</span>
+              </Button>
+            </PopoverTrigger>
+          </div>
+          <PopoverContent className="w-80 h-[320px] lg:hidden overflow-auto border-0 rounded-xl shadow-xl bg-white p-0 mt-2">
+            <CategoryItem restaurantMenuList={restaurantMenuList} />
+          </PopoverContent>
+        </Popover>
         {/* Mobile Footer */}
         <div className="w-full fixed bottom-0 px-3 pb-2 left-0 gap-2 flex lg:hidden z-40">
           <div className="bg-primary flex items-center justify-between w-full p-2 rounded-md">

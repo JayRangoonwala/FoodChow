@@ -82,11 +82,15 @@ const services = [
 ];
 
 export default function ChooseServiceModal({
+  Open,
   shopStatus,
   parsedShopData,
+  onNext,
 }: {
+  Open?: boolean;
   shopStatus: string;
   parsedShopData: any;
+  onNext?: () => void;
 }) {
   const { service: storeService, setService: setServiceStore } =
     useServiceStore();
@@ -401,7 +405,7 @@ export default function ChooseServiceModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open || Open} onOpenChange={setOpen}>
       <DialogTrigger onClick={resetService} asChild>
         {!storeService ? (
           <Button variant="outline" onClick={resetService}>

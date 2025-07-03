@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, Eye, EyeOff } from "lucide-react";
@@ -14,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { ForgotPassword, ResetPassword, VerifyOtp } from "@/lib/loginService";
 import { toast } from "sonner";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const forgotPasswordSchema = z
   .object({
@@ -51,11 +48,37 @@ function ForgotPasswordRequestModal({
   });
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xs w-sm rounded-xl px-4 py-4">
-        <DialogHeader>
-          <DialogTitle>Forgot Password</DialogTitle>
-        </DialogHeader>
-        <div className="mb-2 text-sm">Enter your registered email address.</div>
+      <DialogContent className="w-full max-w-md sm:max-w-lg md:max-w-md rounded-3xl p-0 pt-0 gap-1 overflow-hidden bg-white shadow-2xl border-0">
+        <DialogTitle>
+          <VisuallyHidden>Forgot Password</VisuallyHidden>
+        </DialogTitle>
+        {/* Header Part */}
+        <div className="relative w-full h-[234px] -mt-[59px] overflow-hidden">
+          <div
+            className="w-full h-[230px] bg-contain bg-no-repeat"
+            style={{
+              backgroundImage: "url('/login.jpg')",
+              backgroundPosition: "40% center",
+            }}
+          >
+            <div className="w-full flex justify-start overflow-visible">
+              <div
+                className="w-[490px] h-[200px] bg-no-repeat bg-contain bg-left"
+                style={{ backgroundImage: "url('/loginleft.png')" }}
+              ></div>
+            </div>
+          </div>
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+            <h2 className="text-[25px] font-semibold text-black">
+              Forgot Password
+            </h2>
+          </div>
+        </div>
+        {/* Main Part */}
+        <div className="mb-2 text-sm text-black px-4 font-medium">
+          Enter your registered email address.
+        </div>
+
         <form
           onSubmit={form.handleSubmit(async (data) => {
             const res = await ForgotPassword(data.value);
@@ -65,24 +88,63 @@ function ForgotPasswordRequestModal({
               form.setError("value", { message: "Enter a valid Email" });
             }
           })}
-          className="space-y-2"
+          className="space-y-6 p-3"
         >
-          <Input
-            placeholder="Enter Email"
-            {...form.register("value")}
-            className="mb-2"
-          />
+          <div className="relative group">
+            {/* <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+              <svg
+                className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                />
+              </svg>
+            </div> */}
+            <Input
+              placeholder="Enter your email address"
+              {...form.register("value")}
+              className="pl-3 pr-4 py-4 border-2 border-gray-200 rounded-md focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 hover:border-gray-300 text-sm font-normal"
+            />
+          </div>
+
           {form.formState.errors.value && (
-            <div className="text-xs text-red-600 mb-2">
+            <div className="text-xs text-red-500 mt-2 flex items-center bg-red-50 p-3 rounded-lg">
+              <svg
+                className="w-4 h-4 mr-2 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
               {form.formState.errors.value.message}
             </div>
           )}
+
           <Button
-            className="w-full"
+            className="w-full py-4 bg-[#0AA89E] text-white font-semibold rounded-xl transition-all duration-300 transform hover:shadow-xl focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-base"
             type="submit"
             disabled={form.formState.isSubmitting}
           >
-            Send OTP
+            {form.formState.isSubmitting ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Sending OTP...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center space-x-2">
+                <span>Send OTP</span>
+              </div>
+            )}
           </Button>
         </form>
       </DialogContent>
@@ -112,32 +174,57 @@ function ForgotPasswordNewModal({
       form.reset();
     }
   }, [open]);
-  
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xs w-sm rounded-xl px-4 py-4">
-        <DialogHeader>
-          <DialogTitle>Reset Password</DialogTitle>
-        </DialogHeader>
-        <div className="mb-2 text-sm">Enter your new password below.</div>
+      <DialogContent className="w-full max-w-md sm:max-w-lg md:max-w-md rounded-xl gap-1 p-0">
+        <DialogTitle>
+          <VisuallyHidden>Forgot Password</VisuallyHidden>
+        </DialogTitle>
+        {/* Header Part */}
+        <div className="relative w-full h-[234px] -mt-[59px] overflow-hidden">
+          <div
+            className="w-full h-[230px] bg-contain bg-no-repeat"
+            style={{
+              backgroundImage: "url('/login.jpg')",
+              backgroundPosition: "40% center",
+            }}
+          >
+            <div className="w-full flex justify-start overflow-visible">
+              <div
+                className="w-[490px] h-[200px] bg-no-repeat bg-contain bg-left"
+                style={{ backgroundImage: "url('/loginleft.png')" }}
+              ></div>
+            </div>
+          </div>
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+            <h2 className="text-[25px] font-semibold text-black">
+              Forgot Password
+            </h2>
+          </div>
+        </div>
+
+        {/* Main Part */}
+
+        <div className="mb-2 text-sm px-4">Enter your new password below.</div>
         <form
           onSubmit={form.handleSubmit(async (formData) => {
             const data: any = {
               email: email,
               newPassword: formData.password,
               confirmPassword: formData.confirmPassword,
-            }
+            };
             const res = await ResetPassword(data);
 
-            if (res.error){
+            if (res.error) {
               form.setError("password", { message: res.error });
             }
 
-            if(res.message === "Password reset successfully."){
+            if (res.message === "Password reset successfully.") {
               onSubmission();
             }
           })}
-          className="space-y-2"
+          className="space-y-2 p-3 gap-3"
         >
           <div className="mb-2">
             <label className="block text-xs font-medium mb-1">
@@ -147,8 +234,9 @@ function ForgotPasswordNewModal({
               <Input
                 type={showPassword ? "text" : "password"}
                 {...form.register("password")}
-                className="pr-8"
+                className="pr-8 border-2 border-gray-300"
                 placeholder="New Password"
+                autoComplete="off"
               />
               <button
                 type="button"
@@ -170,15 +258,16 @@ function ForgotPasswordNewModal({
             )}
           </div>
           <div className="mb-2">
-            <label className="block text-xs font-medium mb-1">
+            <label className="block text-xs mt-2 font-medium mb-1">
               Confirm Password
             </label>
             <div className="relative">
               <Input
                 type={showConfirm ? "text" : "password"}
                 {...form.register("confirmPassword")}
-                className="pr-8"
+                className="pr-8  border-2 border-gray-300"
                 placeholder="Confirm Password"
+                autoComplete="off"
               />
               <button
                 type="button"
@@ -200,7 +289,7 @@ function ForgotPasswordNewModal({
             )}
           </div>
           <Button
-            className="w-full"
+            className="w-full mt-2 bg-[#0AA89E]"
             type="submit"
             disabled={form.formState.isSubmitting}
           >
@@ -221,19 +310,43 @@ function ForgotPasswordSuccessModal({
 }) {
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-xs w-sm rounded-xl px-4 py-4 flex flex-col items-center justify-center gap-2">
-        <DialogHeader>
-          <DialogTitle>Password Changed Successfully</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col items-center justify-center mt-2 mb-2 bg-green-600 rounded-full p-2">
-          <Check className="w-10 h-10 text-white" />
+      <DialogContent className="max-w-xs w-sm rounded-xl p-0 flex flex-col items-center justify-center gap-0">
+        <DialogTitle>
+          <VisuallyHidden>Forgot Password</VisuallyHidden>
+        </DialogTitle>
+        {/* Header Part */}
+        <div className="relative w-full h-[234px] -mt-[59px] overflow-hidden">
+          <div
+            className="w-full h-[230px] bg-contain bg-no-repeat"
+            style={{
+              backgroundImage: "url('/login.jpg')",
+              backgroundPosition: "40% center",
+            }}
+          >
+            <div className="w-full flex justify-start overflow-visible">
+              <div
+                className="w-[490px] h-[200px] bg-no-repeat bg-contain bg-left"
+                style={{ backgroundImage: "url('/loginleft.png')" }}
+              ></div>
+            </div>
+          </div>
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+            <h2 className="text-[25px] font-semibold text-black">Success</h2>
+          </div>
         </div>
-        <div className="text-lg font-bold text-center mb-2">
-          Password Changed Successfully
+
+        {/* Main Part */}
+        <div className="p-3 pt-0 w-full flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center mb-4 bg-green-600 rounded-full p-2">
+            <Check className="w-10 h-10 text-white" />
+          </div>
+          <div className="text-lg font- font-medium text-center mb-4">
+            Password Changed Successfully
+          </div>
+          <Button className="w-full bg-[#0AA89E]" onClick={onLogin}>
+            Login
+          </Button>
         </div>
-        <Button className="w-full" onClick={onLogin}>
-          Login
-        </Button>
       </DialogContent>
     </Dialog>
   );
@@ -371,17 +484,34 @@ export function SignUpOtpModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xs w-sm rounded-xl p-2 pt-0 overflow-hidden">
-        {/* Header */}
-        <div className="relative bg-[#dff3f4] px-2 py-4 text-center rounded-t-xl">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-center">
+      <DialogTitle>
+        <VisuallyHidden>OTP Verification</VisuallyHidden> 
+      </DialogTitle>
+      <DialogContent className="w-full max-w-md sm:max-w-lg md:max-w-md rounded-xl p-0 pt-0 overflow-hidden">
+        {/* Header Part */}
+        <div className="relative w-full h-[234px] -mt-[59px] overflow-hidden">
+          <div
+            className="w-full h-[230px] bg-contain bg-no-repeat"
+            style={{
+              backgroundImage: "url('/login.jpg')",
+              backgroundPosition: "40% center",
+            }}
+          >
+            <div className="w-full flex justify-start overflow-visible">
+              <div
+                className="w-[490px] h-[200px] bg-no-repeat bg-contain bg-left"
+                style={{ backgroundImage: "url('/loginleft.png')" }}
+              ></div>
+            </div>
+          </div>
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+            <h2 className="text-[25px] font-semibold text-black">
               OTP Verification
-            </DialogTitle>
-          </DialogHeader>
+            </h2>
+          </div>
         </div>
         {/* Message */}
-        <div className="text-center text-sm mt-2 mb-1">
+        <div className="text-center text-sm m-0">
           We've sent to verification code to <br />
           <span className="font-medium">{email}</span>{" "}
           <button
@@ -394,10 +524,10 @@ export function SignUpOtpModal({
         </div>
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-center gap-3 px-1"
+          className="flex flex-col items-center gap-2 px-3 pb-3"
         >
           {/* OTP Inputs */}
-          <div className="flex gap-1 justify-center mb-1">
+          <div className="flex gap-3 justify-center mb-1">
             {otp.map((digit, idx) => (
               <input
                 key={idx}
@@ -405,7 +535,8 @@ export function SignUpOtpModal({
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
-                className="w-8 h-10 text-center border border-gray-300 rounded text-lg focus:border-primary outline-none"
+                autoComplete="off"
+                className="w-10 h-12 text-center border border-gray-300 rounded text-lg focus:border-primary outline-none"
                 value={digit}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -431,7 +562,7 @@ export function SignUpOtpModal({
             ))}
           </div>
           {/* Resend */}
-          <div className="text-center text-xs mb-1">
+          <div className="text-center text-sm mb-1">
             Didn't receive the OTP?{" "}
             <button
               type="button"
@@ -445,7 +576,7 @@ export function SignUpOtpModal({
           {/* VERIFY OTP Button */}
           <Button
             type="submit"
-            className="w-full bg-primary text-white h-10 rounded-lg text-sm font-semibold disabled:opacity-60"
+            className="w-full bg-[#0AA89E] text-white h-10 rounded-lg text-sm font-semibold disabled:opacity-60"
             disabled={!canSubmit}
           >
             VERIFY OTP

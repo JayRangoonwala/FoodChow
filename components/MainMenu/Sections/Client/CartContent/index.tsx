@@ -47,10 +47,11 @@ export default function CartContent() {
 
   const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
-
+  
   useEffect(() => {
     try {
       const cartData = localStorage.getItem("cartItems");
+      // const dealsData = localStorage.getItem("DealItems")
 
       if (cartData) {
         const { value, expiry } = JSON.parse(cartData);
@@ -65,10 +66,16 @@ export default function CartContent() {
           setCartItems(Array.isArray(value) ? value : []);
         }
       }
+      // if(dealsData){
+      //   const dealArray = JSON.parse(dealsData);
+      //   setCartItems([...cartItems,...(Array.isArray(dealArray) ? dealArray : [])]);
+      // }
     } catch (err) {
       console.error("Error parsing cart data:", err);
       setCartItems([]);
     }
+
+    console.log(cartItems)
 
     const orderMethod = localStorage.getItem("orderMethod");
     const parsedOrderMethod = orderMethod ? JSON.parse(orderMethod) : null;
@@ -287,7 +294,7 @@ export default function CartContent() {
                 <span className="text-primary text-lg font-black">{shopData?.currency_symbol}{formatAmount(grandTotal)}</span>
               </div>
               <Link href={"/final-checkout"} className="w-full">
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold rounded-md py-2 text-xs tracking-wide shadow-md uppercase">Proceed to Checkout</Button>
+                <Button className="w-full bg-[#34678D] text-white font-bold rounded-md py-2 text-xs tracking-wide shadow-md uppercase">Proceed to Checkout</Button>
               </Link>
             </div>
           </div>

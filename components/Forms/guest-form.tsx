@@ -135,6 +135,7 @@ export default function GuestForm({
         hasErrors = true;
       }
     }
+    // console.log("parsedUserOptions?.phone_no", mobile);
 
     if (parsedUserOptions?.phone_no == "1" && !mobile) {
       guestForm.setError("mobile", {
@@ -150,6 +151,8 @@ export default function GuestForm({
       });
       hasErrors = true;
     }
+
+    // console.log("countryCode", phone("+" + countryCode + mobile));
 
     if (!phone("+" + countryCode + mobile).isValid) {
       guestForm.setError("mobile", {
@@ -345,7 +348,7 @@ export default function GuestForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isSendingQuery}>
+        <Button type="submit" className="w-full bg-[#0AA89E]" disabled={isSendingQuery}>
           Save
         </Button>
       </form>

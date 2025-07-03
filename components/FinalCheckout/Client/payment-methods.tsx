@@ -282,18 +282,18 @@ export default function PaymentMetod() {
         </RadioGroup>
       </div>
 
-      <Label htmlFor="r4" className="my-4 font-extrabold text-gray-700 text-lg">
+      <Label htmlFor="r4" className="my-4 font-extrabold text-gray-700 text-lg ">
         Comments (Optional)
       </Label>
       <Textarea
         id="r4"
         placeholder="Any Notes (Optional)"
-        className="mt-5 md:h-40 font-medium text-[20px] pt-3"
+        className="mt-5 md:h-40 font-medium text-[20px] pt-3 sm:text-[10px]"
         onChange={(e) => setOrderNotes(e.target.value)}
         value={orderNotes}
       />
 
-      <div className="text-center text-green-600 font-bold mt-4 mb-2 text-lg">
+      <div className="text-center text-[#0aa861] font-bold mt-4 mb-2 text-lg">
         <h3>
           {orderMethod && orderMethod.custom_notes
             ? orderMethod.custom_notes
@@ -309,6 +309,7 @@ export default function PaymentMetod() {
             placingOrder
           }
           onClick={() => handlePlaceOrder()}
+          className="bg-[#0AA89E]"
         >
           {placingOrder ? (
             <>

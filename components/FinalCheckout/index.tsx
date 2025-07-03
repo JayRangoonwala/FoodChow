@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import FinalCheckoutCart from "./final-checkout-cart";
 import LeftSection from "./Client/left-section";
 import { useCartStore } from "@/store/cartStore";
@@ -10,6 +11,9 @@ import { useShopDataStore } from "@/store/shopDataStore";
 import { fetchUserOptions } from "@/lib/shopService";
 import { Lock } from "lucide-react";
 import UserLoginModal from "../Modal/User-Login";
+import { LoginWithSocial } from "@/lib/loginService";
+import { useSession } from "next-auth/react";
+import { useLoginStore } from "@/store/loginStore";
 
 export default function FinalCheckoutPage({
   parsedCountryCodes,
@@ -18,10 +22,18 @@ export default function FinalCheckoutPage({
 }) {
   const { shopData } = useShopDataStore();
   const [parsedUserOptions, setParsedUserOptions] = useState<any>(null);
-
+  const searchParams = useSearchParams();
   const [cartItems, setCartItems] = useState<any>([]);
   const { cartCleared, itemRemoved } = useCartStore();
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  // const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isLoginModalOpen = useLoginStore((state) => state.isLoginModalOpen)
+  const setIsLoginModalOpen = useLoginStore((state) => state.setIsLoginModalOpen)
+  type SocialData = {
+    user_email: string;
+    login_type: string;
+  };
 
   useEffect(() => {
     // Get cart items
@@ -75,13 +87,13 @@ export default function FinalCheckoutPage({
             <div className="w-full lg:w-2/3">
               <div className="left-section flex flex-col gap-4">
                 {/* LOGIN BAR */}
-                <div className="w-full bg-white text-green-600 border-2 border-gray-200 px-4 py-2 rounded-xl flex items-center justify-between">
+                <div className="w-full bg-white text-[#008000] border-2 border-gray-200 px-4 py-2 rounded-xl flex items-center justify-between">
                   <span className="font-medium">
                     Sign in to unlock exclusive rewards, or continue as a guest.
                   </span>
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-2xl flex items-center gap-1"
-                    onClick={() => setIsLoginOpen(true)}
+                    className="bg-[#0AA89E] text-white px-4 py-2 rounded-2xl flex items-center gap-1"
+                    onClick={() => setIsLoginModalOpen(true)}
                   >
                     <Lock className="w-4 h-4" />
                     <span>Login</span>
@@ -100,8 +112,8 @@ export default function FinalCheckoutPage({
             </div>
           </div>
           <UserLoginModal
-            open={isLoginOpen}
-            onClose={() => setIsLoginOpen(false)}
+            open={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
             parsedCountryCodes={parsedCountryCodes}
           />
         </div>

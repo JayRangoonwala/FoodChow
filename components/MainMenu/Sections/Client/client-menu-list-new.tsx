@@ -149,7 +149,7 @@ export default function ClientMenuList({
                           </span>
                           <Button
                             variant="outline"
-                            className="rounded-full px-5 py-1 font-bold flex items-center gap-1 border-primary text-primary hover:bg-primary/10"
+                            className="rounded-full px-5 py-1 xl:px-3 font-bold flex items-center gap-1 border-primary text-primary hover:bg-primary"
                           >
                             + ADD
                           </Button>
@@ -209,7 +209,7 @@ export default function ClientMenuList({
                               </span>
                               <Button
                                 variant="outline"
-                                className="rounded-full px-5 py-1 font-bold flex items-center gap-1 border-primary text-primary hover:bg-primary/10"
+                                className="rounded-full px-5 py-1 font-bold flex items-center gap-1 border-primary text-primary hover:bg-primary"
                                 onClick={() => setOpenAddItem(menuItem)}
                               >
                                 + ADD

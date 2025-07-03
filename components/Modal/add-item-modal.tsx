@@ -19,7 +19,7 @@ export default function AddItemModal({
   itemData: any;
   ctgId: number;
 }) {
-  console.log(itemData);
+  // console.log(itemData);
   // const [loading, setLoading] = useState(false);
   const { setServiceModalOpen } = useToggleModalStore();
   const { service } = useServiceStore();

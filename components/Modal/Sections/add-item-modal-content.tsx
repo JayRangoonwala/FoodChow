@@ -508,7 +508,7 @@ export default function AddItemModalContent({
 
   return (
     <div>
-      <div className="overflow-auto">
+      <div className="overflow-auto font-sans">
         {!exists ? (
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">
@@ -520,7 +520,7 @@ export default function AddItemModalContent({
             </DialogDescription>
           </DialogHeader>
         ) : (
-          <div className="flex flex-col text-start items-center">
+          <div className="flex flex-col text-start items-center font-sans">
             <div className="w-[250px] h-[150px] flex flex-col items-center justify-center">
               <img
                 src={FoodChowData.menuImages + itemData.ItemImage}
@@ -528,8 +528,8 @@ export default function AddItemModalContent({
                 className="w-[250px] h-[150px] object-cover rounded-md"
               />
             </div>
-            <h3 className="text-xl font-semibold">{itemData.ItemName}</h3>
-            <p className="text-muted-foreground">{itemData.Description}</p>
+            <h3 className="text-xl font-medium mt-2">{itemData.ItemName}</h3>
+            <p className="text-muted-foreground text-base">{itemData.Description}</p>
             <div className="flex w-[150px] self-center mt-2">
               <Button
                 variant={"outline"}
@@ -891,7 +891,7 @@ export default function AddItemModalContent({
               );
             })}
           <div className="py-2">
-            <h4 className="text-lg font-semibold space-y-2">
+            <h4 className="text-lg font-medium space-y-2">
               Special Instructions
             </h4>
             <Textarea
@@ -902,7 +902,7 @@ export default function AddItemModalContent({
           </div>
         </div>
       </div>
-      <DialogFooter className="sticky bottom-0 left-0 bg-background pt-4 mt-4 pb-6">
+      <DialogFooter className="sticky bottom-0 left-0 bg-background pt-4 mt-4 pb-2">
         <div className="flex flex-col gap-2 w-full">
           {!exists && <Separator className="my-2 bg-gray-200" />}
           {!exists && (

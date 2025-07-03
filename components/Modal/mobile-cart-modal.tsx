@@ -14,7 +14,7 @@ export default function MobileCartModal({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="min-w-full h-full rounded-none">
+      <DialogContent className="min-w-full h-full rounded-none p-5">
         <DialogHeader>
           <DialogTitle className="flex justify-between items-center mr-12">
             <span>Your Cart</span>

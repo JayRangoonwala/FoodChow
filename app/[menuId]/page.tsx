@@ -10,6 +10,7 @@ import {
 } from "@/lib/shopService";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import MainMenuNew2 from "@/components/MainMenu/New2";// Importing New2 if needed later
 
 export const dynamic = "force-dynamic";
 
@@ -41,9 +42,9 @@ export default async function Page({
       {/* <Suspense fallback={<MainMenuSkeleton />}>
         <MainMenuPage mainMenu={false} menuId={menuId} />
       </Suspense> */}
-      <div className="w-full">
-        <MainMenuNew mainMenu={false} menuId={menuId} />
-      </div>
+      {/* <div className="w-full"> */}
+        <MainMenuNew2 mainMenu={false} menuId={menuId} />
+      {/* </div> */}
     </>
   );
 }

@@ -21,7 +21,7 @@ export default function CartItem({
   return (
     <div className="flex py-1 px-1 mb-1 bg-white border border-gray-100 rounded-md shadow-sm items-center">
       <div className="flex-1 flex flex-col gap-0.5">
-        <h4 className="font-semibold text-xs text-start leading-tight mb-0.5">{item.order_itemname}</h4>
+        <h4 className="font-semibold text-xs text-start leading-tight mb-0.5">{item.order_itemname ? item.order_itemname : item.order_dealname}</h4>
         <div className="flex flex-col text-muted-foreground text-[11px] text-start leading-tight">
           {/* SIZES */}
           {item.order_size && (

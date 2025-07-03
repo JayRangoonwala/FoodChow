@@ -31,11 +31,14 @@ export default function SlowConnectionPopup() {
   if (!showPopup) return null;
 
   return (
-    <div className="fixed top-0 right-0 w-fit bg-gray-500 text-white px-4 py-3 shadow max-sm:text-xs z-50 max-lg:top-20 rounded-2xl text-center">
-      ⚠️ Slow Internet Connection Detected.
+    <div className="fixed top-2 left-1/2 -translate-x-1/2 w-[95vw] max-w-lg bg-gray-400 border border-yellow-300 text-yellow-900 px-4 py-3 shadow-lg z-50 rounded-2xl flex items-center gap-3">
+      <span className="text-2xl max-sm:text-lg">⚠️</span>
+      <span className="flex-1 text-sm sm:text-base font-medium">
+        Slow Internet Connection Detected.
+      </span>
       <button
         onClick={() => setShowPopup(false)}
-        className="ml-4 px-2 py-1 max-sm:p-1 text-sm text-yellow-900 bg-yellow-200 rounded"
+        className="ml-2 px-3 py-1 text-xs sm:text-sm font-semibold bg-yellow-200 hover:bg-yellow-300 text-yellow-900 rounded-lg shadow transition"
       >
         Dismiss
       </button>

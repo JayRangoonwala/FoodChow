@@ -10,6 +10,7 @@ import { formatAmount } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCheckoutStore } from "@/store/checkoutStore";
+import { Eye } from "lucide-react";
 
 interface CartItem {
   itemString: string;
@@ -53,24 +54,23 @@ export default function CartContent() {
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
   useEffect(() => {
-    try{
+    try {
       const cartData = localStorage.getItem("cartItems");
-      
+
       if (cartData) {
-        const {value,expiry} = JSON.parse(cartData);
+        const { value, expiry } = JSON.parse(cartData);
         const now = Date.now();
-        
-        if(expiry && now > expiry){
+
+        if (expiry && now > expiry) {
           console.warn("Cart Data has Expired !!");
           localStorage.removeItem("cartItems");
           setCartItems([]);
-        }
-        else{
+        } else {
           setCartItems(Array.isArray(value) ? value : []);
         }
       }
-    }catch(error){
-      console.log("Error in parsing",error);
+    } catch (error) {
+      console.log("Error in parsing", error);
     }
 
     const orderMethod = localStorage.getItem("orderMethod");
@@ -128,7 +128,7 @@ export default function CartContent() {
         const updatedItems = prevItems.filter(
           (item) => item.itemString !== itemToRemove
         );
-        setWithExpiry("cartItems", updatedItems,7200000);
+        setWithExpiry("cartItems", updatedItems, 7200000);
         return updatedItems;
       });
       setItemToRemove(null);
@@ -157,7 +157,7 @@ export default function CartContent() {
         }
         return item;
       });
-      setWithExpiry("cartItems", updatedItems,7200000);
+      setWithExpiry("cartItems", updatedItems, 7200000);
       return updatedItems;
     });
   };
@@ -226,10 +226,25 @@ export default function CartContent() {
   return (
     <>
       {cartItems && cartItems.length >= 1 ? (
-        <div className="flex flex-col gap-2 h-full">
-          <div className="flex-1 overflow-scroll">
+        <div className="flex flex-col gap-2 md:h-[600px] bg-white rounded-lg p-4 shadow-sm">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+
+            <h2 className="text-lg font-semibold text-primary">Your Card</h2>
+            <Button
+              variant="outline"
+              className="border-red-500 text-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-sm"
+              // onClick={clearCart}
+            >
+              Clear Cart
+            </Button>
+          </div>
+          <div className="flex justify-between items-center border-t-2 border-dashed border-red-300 pt-2"></div>
+
+          {/* Cart Items List */}
+          <div className="flex-1 max-h-72 overflow-y-auto space-y-3">
             {cartItems.map((cartItem: CartItem, index: number) => (
-              <React.Fragment key={index}>
+              <div key={index}>
                 <CartItem
                   item={cartItem}
                   shopData={shopData}
@@ -237,31 +252,34 @@ export default function CartContent() {
                   onIncrement={() => updateItemQty(cartItem.itemString, 1)}
                   onDecrement={() => updateItemQty(cartItem.itemString, -1)}
                 />
-                {index + 1 !== cartItems.length && (
-                  <Separator className="bg-muted" />
-                )}
-              </React.Fragment>
+                {/* {index + 1 !== cartItems.length && (
+                  // <Separator className="bg-gray-200 my-2" />
+                )} */}
+              </div>
             ))}
           </div>
-          <Separator className="h-1 bg-muted" />
-          <div className="flex justify-between items-center text-lg font-semibold">
-            <span className="text-muted-foreground">Item Total:</span>
-            <span className="text-muted-foreground">
+
+          <Separator className="h-0.5 bg-gray-200 my-2" />
+
+          {/* Item Total */}
+          <div className="flex justify-between text-sm font-medium">
+            <span className="text-gray-500">Item Total</span>
+            <span>
               {shopData?.currency_symbol}
               {formatAmount(itemTotal)}
             </span>
           </div>
-          <Separator className="h-1 bg-muted" />
-          {/* Tax Details */}
+
+          {/* Tax Breakdown */}
           {Object.entries(taxDetails).length > 0 && (
             <>
               {Object.entries(taxDetails).map(
                 ([taxName, amount]: [string, number]) => (
                   <div
                     key={taxName}
-                    className="flex justify-between items-center text-lg font-semibold text-muted-foreground"
+                    className="flex justify-between text-sm font-medium text-gray-500"
                   >
-                    <span>{taxName}</span>
+                    <span>{taxName}:</span>
                     <span>
                       {shopData?.currency_symbol}
                       {formatAmount(amount)}
@@ -269,30 +287,36 @@ export default function CartContent() {
                   </div>
                 )
               )}
-              <Separator className="h-1 bg-muted" />
             </>
           )}
-          <div className="space-y-2">
-            {orderMethod && otherServices && (
-              <>
-                <div className="flex justify-between items-center text-lg font-semibold text-muted-foreground">
-                  <span>{otherServices.label}</span>
-                  <span>
-                    {shopData?.currency_symbol}
-                    {formatAmount(otherServices.amount)}
-                  </span>
-                </div>
-                <Separator className="bg-muted" />
-              </>
-            )}
+
+          {/* Other Service Charges */}
+          {orderMethod && otherServices && (
+            <div className="flex justify-between text-sm font-medium text-gray-500">
+              <span>{otherServices.label}</span>
+              <span>
+                {shopData?.currency_symbol}
+                {formatAmount(otherServices.amount)}
+              </span>
+            </div>
+          )}
+
+          {/* Coupon Code Input */}
+          <div className="flex items-center mt-2 gap-2">
+            <div className="relative w-full">
+              <Input placeholder="Coupon Code" className="pr-10 text-sm" />
+              <Eye className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+            </div>
+            <Button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-full text-sm">
+              Apply
+            </Button>
           </div>
-          <div className="flex gap-2">
-            <Input placeholder="Coupon Code" />
-            <Button>Apply</Button>
-          </div>
-          <Separator className="!h-0.5 bg-muted" />
-          <div className="flex justify-between items-center text-lg font-semibold">
-            <span>Total:</span>
+
+          <Separator className="!h-0.5 bg-gray-300 mt-3" />
+
+          {/* Grand Total */}
+          <div className="flex justify-between text-lg font-semibold">
+            <span>Total</span>
             <span>
               {shopData?.currency_symbol}
               {formatAmount(grandTotal)}
@@ -301,17 +325,16 @@ export default function CartContent() {
         </div>
       ) : (
         <div className="p-4 h-full content-center">
-          <div className="col-md-12 place-items-center">
-            <img src="/empty.png" alt="empty-cart" />
-          </div>
-          <div className="col-md-12 text-center mt-4 fs-18 fw-600">
-            <label className="text-muted-foreground text-xl">
+          <div className="flex flex-col items-center text-center">
+            <img src="/empty.png" alt="empty-cart" className="w-32" />
+            <p className="mt-4 text-gray-500 text-lg font-semibold">
               Your cart is empty! Add some delicious food items and satisfy your
               cravings. 🍽️😋
-            </label>
+            </p>
           </div>
         </div>
       )}
+
       <RemoveItemModal
         isOpen={isRemoveDialogOpen}
         setOpen={cancelRemoveItem}
